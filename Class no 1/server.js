@@ -6,8 +6,8 @@ const app = express();
 const port = 5000;
 require('dotenv').config();
 
-// MongoDB URI from environment variables or default to MongoDB Atlas URI (replace with your actual URI)
-const mongoUri = process.env.MONGO_URI || 'mongodb+srv://<username>:<password>@cluster0.mongodb.net/todos?retryWrites=true&w=majority';
+// MongoDB URI from environment variables or default to a placeholder
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/test';
 
 // Middlewares
 app.use(cors());
@@ -19,22 +19,65 @@ app.use(bodyParser.json());
 const connectMongoDB = async () => {
   try {
     console.log("Connecting to MongoDB...");
-    // Connect to MongoDB Atlas using the URI
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(mongoUri); // Removed deprecated options
     console.log("MongoDB Connected");
-    console.log("--------------------------------");
+    console.log("---------------------------------__--___--____--___---____---____---___");
   } catch (error) {
-    console.error("MongoDB Connection Error: ", error);
+    console.error("MongoDB Connection Error: ", error.message);
     process.exit(1); // Exit the process if MongoDB connection fails
   }
 };
 
-// Connect to MongoDB
-connectMongoDB();
-
 // Enable Mongoose debugging (optional)
 mongoose.set('debug', true);
+connectMongoDB();
 
+
+// Define the Todo schema
+const todoSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  completed: {
+    type: Boolean,
+    default: false, // Default to false if not provided
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
+// Define the Todo model
+const Todo = mongoose.model('Todo', todoSchema);
+
+// Create a new todo
+app.post('/todos/create', async (req, res) => {
+  try {
+    // Create a new Todo instance from the request body
+    const newTodo = new Todo(req.body);
+
+    // Save the Todo to the database
+    const savedTodo = await newTodo.save();
+    console.log("savedTodo: ", savedTodo);
+
+    // Respond with the saved Todo 
+    res.status(201).json({
+      data: savedTodo,
+      message: "Todo created successfully",
+    });
+  } catch (error) {
+    console.error("Error creating todo:", error.message);
+
+    // Respond with an error message
+    res.status(500).json({
+      data: null,
+      message: "Error creating todo",
+      error: error.message,
+    });
+  }
+});
 
 
 
@@ -89,34 +132,6 @@ app.get('/todos/:id', (req, res) => {
   }
 })
 
-//create todo
-app.post('/todos/create', (req, res) => {
-  try {
-    
-    let todos = [
-      { id: 1, title: 'Todo 1', completed: false },
-      { id: 2, title: 'Todo 2', completed: true },
-      { id: 3, title: 'Todo 3', completed: false },
-    ]
-    let newTodo = {
-      id: todos.length + 1,
-      title: req.body.title,
-      completed: req.body.completed,
-    }
-    todos.push(newTodo)
-
-    res.json({
-      data: newTodo,
-      message: "Success",
-    })
-  } catch (error) {
-    res.status(501).json({
-      data: [],
-      message: "Error",
-      error: error.message,
-    })
-  }
-})
 
 //delete todo
 app.delete('/todos/:id', (req, res) => {
@@ -218,14 +233,12 @@ app.get('/users/:id', (req, res) => {
   // console.log("Query Params: ", req.params, req.query);
   // console.log("req.body Recieved: ", req.body);
   console.log("req.headers: ", req.headers);
-  
-  
-
   let data = {
     id: req.query.id,
     name: req.query.name,
     name: 'Ahmad',
     age: 25,
+    
     email: 'ahmad@gmail.com'
   }
   res.status(201).json([{
