@@ -39,9 +39,23 @@ const todoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  description: {
+    type: String,
+    required: false,
+  },
   completed: {
     type: Boolean,
     default: false, // Default to false if not provided
+  },
+  id: {
+    type: Number,
+    unique:true,
+    required: true,
   },
   createdAt: {
     type: Date,
@@ -56,7 +70,14 @@ const Todo = mongoose.model('Todo', todoSchema);
 app.post('/todos/create', async (req, res) => {
   try {
     // Create a new Todo instance from the request body
-    const newTodo = new Todo(req.body);
+    const newTodo = new Todo({
+      title: req?.body?.title,
+      email: req?.body?.email,
+      description: req?.body?.description,
+      completed: req?.body?.completed,
+      id: req?.body?.id,
+    })
+    console.log("newTodo: ", newTodo);
 
     // Save the Todo to the database
     const savedTodo = await newTodo.save();
@@ -88,45 +109,43 @@ app.get('/', (req, res) => {
 
 //todos
 //get todos
-app.get('/todos', (req, res) => {
+app.get('/todos', async (req, res) => {
   try {
-    let todos = [
-      { id: 1, title: 'Todo 1', completed: false },
-      { id: 2, title: 'Todo 2', completed: true },
-      { id: 3, title: 'Todo 3', completed: false },
-    ]
+    //get all todos
+    let getTodos = await Todo.find()
+    console.log("todos: ", getTodos);
 
-    res.json({
-      data: todos,
-      message: "Success",
+
+    res.status(200).json({
+      message: "Success todos",
+      data: getTodos,
     })
   } catch (error) {
     res.status(501).json({
       data: [],
-      message: "Error",
+      message: "Error in getting Todos",
       error: error.message,
     })
   }
 })
 
 //get todo by id
-app.get('/todos/:id', (req, res) => {
+app.get('/todos/:id', async (req, res) => {
   try {
-    let todos = [
-      { id: 1, title: 'Todo 1', completed: false },
-      { id: 2, title: 'Todo 2', completed: true },
-      { id: 3, title: 'Todo 3', completed: false },
-    ]
-    let todo = todos.find(todo => todo.id === parseInt(req.params.id))
-    
-    res.json({
-      data: todo,
-      message: "Success",
+    // const findTodoById = await Todo.findById(req?.params?._id);
+    // const findTodoById = await Todo.find({id: req?.params?.id})
+    //findone
+
+    console.log("findTodoById: ", findTodoById);
+
+    res.status(200).json({
+      data: findTodoById,
+      message: "Success in getting todo by id",
     })
   } catch (error) {
     res.status(501).json({
       data: [],
-      message: "Error",
+      message: "Error in getting todo by id",
       error: error.message,
     })
   }
