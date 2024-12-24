@@ -193,6 +193,20 @@ app.put("/todos/update/:id", async (req, res) => {
   }
 });
 
+
+const userSchema = new mongoose.Schema({
+  email: {
+    required: true,
+    type: string,
+    unique
+  },
+  password: {
+    required: true,
+    
+  }
+})
+
+
 //auth login
 app.post("/auth/login", async (req, res) => {
   try {
