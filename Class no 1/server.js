@@ -195,18 +195,53 @@ app.put("/todos/update/:id", async (req, res) => {
 
 
 const userSchema = new mongoose.Schema({
+  name: string,
   email: {
     required: true,
     type: string,
-    unique
+    unique: true
   },
   password: {
     required: true,
-    
-  }
+    type: string
+  },
+  address: string
 })
 
+const User = mongoose.model("User", userSchema);
 
+
+//auth signup
+app.post("/auth/signup", async (req, res) => {
+  try {
+    console.log("req.body in signup: ", req.body);
+    if(!req.body.password){
+      res.status(501).json({
+        data: [],
+        message: "Error",
+        error: "Password is required",
+      });
+    }
+    let newUser = new User({
+      name: req?.body?.name,
+      email: req?.body?.email,
+      password: req?.body?.password,
+      address: req?.body?.address
+    })
+    let savedUser = await newUser.save();
+    console.log("savedUser: ", savedUser);
+    res.status(200).json({
+      data: req.body,
+      message: "Success",
+    });
+  } catch (error) {
+    res.status(501).json({
+      data: [],
+      message: "Error",
+      error: error.message,
+    });
+  }
+})
 //auth login
 app.post("/auth/login", async (req, res) => {
   try {
@@ -224,22 +259,22 @@ app.post("/auth/login", async (req, res) => {
   }
 })
 
-//auth signup
-app.post("/auth/signup", async (req, res) => {
-  try {
-    console.log("req.body: ", req.body);
-    res.status(200).json({
-      data: req.body,
-      message: "Success",
-    });
-  } catch (error) {
-    res.status(501).json({
-      data: [],
-      message: "Error",
-      error: error.message,
-    });
-  }
-})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 
 
