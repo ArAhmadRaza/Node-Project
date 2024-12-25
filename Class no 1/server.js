@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 5000;
@@ -15,6 +17,35 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const secretKey = process.env.SECRET_KEY || "hfbv#@#^*568gfdfgjdsf;;./5348";
+
+const authVerify = async (req, res, next) => {
+  try {
+    let token = req?.headers?.authorization;
+    let decoded = jwt.verify(token, secretKey);
+    console.log("decoded: ", decoded);
+
+    if(!decoded){
+      res.status(501).json({
+        data: [],
+        message: "Error in authVerify",
+        error: "Login is required",
+      });
+    }
+    res.status(200).json({
+      data: decoded,
+      message: "Login Successfully",
+    });
+    next();
+  } catch (error) {
+    res.status(501).json({
+      data: [],
+      message: "Error in authVerify",
+      error: error.message,
+    });
+
+  }
+}
 // Function to connect MongoDB with mongoose
 const connectMongoDB = async () => {
   try {
@@ -195,17 +226,21 @@ app.put("/todos/update/:id", async (req, res) => {
 
 
 const userSchema = new mongoose.Schema({
-  name: string,
+  name: String,
   email: {
     required: true,
-    type: string,
+    type: String,
     unique: true
   },
   password: {
     required: true,
-    type: string
+    type: String
   },
-  address: string
+  address: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 })
 
 const User = mongoose.model("User", userSchema);
@@ -222,16 +257,19 @@ app.post("/auth/signup", async (req, res) => {
         error: "Password is required",
       });
     }
+    let hashedPassword = await bcrypt.hashSync(req?.body?.password, 10);
+    console.log("hashedPassword: ", hashedPassword);
     let newUser = new User({
       name: req?.body?.name,
       email: req?.body?.email,
-      password: req?.body?.password,
-      address: req?.body?.address
+      password: hashedPassword,
+      address: req?.body?.address,
+      createdAt: new Date()
     })
     let savedUser = await newUser.save();
     console.log("savedUser: ", savedUser);
     res.status(200).json({
-      data: req.body,
+      data: savedUser,
       message: "Success",
     });
   } catch (error) {
@@ -242,15 +280,59 @@ app.post("/auth/signup", async (req, res) => {
     });
   }
 })
+
+
+
+
 //auth login
 app.post("/auth/login", async (req, res) => {
   try {
-    console.log("req.body: ", req.body);
+    if(!req.body.email){
+      res.status(501).json({
+        data: [],
+        message: "Error",
+        error: "Email is required",
+      });
+    }
+
+    if(!req.body.password){
+      res.status(501).json({
+        data: [],
+        message: "Error",
+        error: "Password is required",
+      });
+    }
+    let findUser = await User.findOne({email: req.body.email});
+    if(!findUser){
+      res.status(501).json({
+        data: [],
+        message: "Error",
+        error: "User not found",
+      });
+    }
+    let isPasswordCorrect = await bcrypt.compareSync(req?.body?.password, findUser?.password);
+    if(!isPasswordCorrect){
+      res.status(501).json({
+        data: [],
+        message: "Error",
+        error: "Password is incorrect",
+      });
+    }
+    let token = jwt.sign({email: findUser?.email, name: findUser?.name}, secretKey);
+    console.log("JWT Token : ", token);
+    
+
     res.status(200).json({
-      data: req.body,
-      message: "Success",
+      data: {
+        email: findUser?.email,
+        name: findUser?.name,
+        address: findUser?.address,
+        createdAt: findUser?.createdAt,
+        token: token,
+      },
+      message: "User logged in successfully",
     });
-  } catch (error) {
+  } catch (error) {  
     res.status(501).json({
       data: [],
       message: "Error",
@@ -373,13 +455,30 @@ app.get("/users/:id", (req, res) => {
 // delete - delete method
 // get - get method
 
-app.get("/xyz", (req, res) => {
-  let users = [
-    { name: "John", age: 25 },
-    { name: "Jane", age: 22 },
-    { name: "Jim", age: 32 },
-  ];
-  res.json(users);
+app.post("/xyz",async (req, res) => {
+  try {
+    console.log("Token Recieved: ", req?.body?.token);
+    let decoded = jwt.verify(req?.body?.token, secretKey);
+    console.log("decoded: ", decoded);
+    if(!decoded){
+      res.status(501).json({
+        data: [],
+        message: "Error",
+        error: "Login is required",
+      });
+    }
+
+    res.status(200).json({
+      data: decoded,
+      message: "Login Successfully",
+    });
+  } catch (error) {
+    res.status(501).json({
+      data: [],
+      message: "Error",
+      error: error.message,
+    });
+  }
 });
 
 app.listen(port, () => {
