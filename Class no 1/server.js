@@ -21,21 +21,17 @@ const secretKey = process.env.SECRET_KEY || "hfbv#@#^*568gfdfgjdsf;;./5348";
 
 const authVerify = async (req, res, next) => {
   try {
-    let token = req?.headers?.authorization;
-    let decoded = jwt.verify(token, secretKey);
-    console.log("decoded: ", decoded);
-
-    if(!decoded){
+    if(!req?.headers?.authorization){
       res.status(501).json({
         data: [],
         message: "Error in authVerify",
         error: "Login is required",
-      });
+      }); 
     }
-    res.status(200).json({
-      data: decoded,
-      message: "Login Successfully",
-    });
+    let token = req?.headers?.authorization;
+    let decoded = jwt.verify(token, secretKey);
+    console.log("decoded: ", decoded);
+    req.user = decoded;
     next();
   } catch (error) {
     res.status(501).json({
@@ -46,6 +42,15 @@ const authVerify = async (req, res, next) => {
 
   }
 }
+
+
+
+
+
+
+
+
+
 // Function to connect MongoDB with mongoose
 const connectMongoDB = async () => {
   try {
@@ -103,7 +108,7 @@ app.get("/", (req, res) => {
 });
 
 // Create a new todo
-app.post("/todos/create", async (req, res) => {
+app.post("/todos/create",authVerify, async (req, res) => {
   try {
     // Create a new Todo instance from the request body
     const newTodo = new Todo({
@@ -138,12 +143,12 @@ app.post("/todos/create", async (req, res) => {
 
 //todos
 //get todos
-app.get("/todos", async (req, res) => {
+app.get("/todos", authVerify, async (req, res) => {
   try {
     //get all todos
     let getTodos = await Todo.find();
     console.log("todos: ", getTodos);
-
+ 
     res.status(200).json({
       message: "Success todos",
       data: getTodos,
@@ -155,10 +160,10 @@ app.get("/todos", async (req, res) => {
       error: error.message,
     });
   }
-});
-
+}); 
+ 
 //get todo by id
-app.get("/todos/:id", async (req, res) => {
+app.get("/todos/:id", authVerify, async (req, res) => {
   try {
     let id = req?.params?.id;
     // let findTodoById = await Todo.findById({id:id})
@@ -180,7 +185,7 @@ app.get("/todos/:id", async (req, res) => {
 });
 
 //delete todo
-app.delete("/todos/delete/:id", async (req, res) => {
+app.delete("/todos/delete/:id", authVerify, async (req, res) => {
   try {
     let id = req?.params?.id;
     let deleteTodo = await Todo.findOneAndDelete({ id: id });
@@ -199,7 +204,7 @@ app.delete("/todos/delete/:id", async (req, res) => {
 });
 
 //update todo
-app.put("/todos/update/:id", async (req, res) => {
+app.put("/todos/update/:id", authVerify, async (req, res) => {
   try {
     let id = req?.params?.id;
     let updateTodo = await Todo.findOneAndUpdate(
@@ -318,7 +323,7 @@ app.post("/auth/login", async (req, res) => {
         error: "Password is incorrect",
       });
     }
-    let token = jwt.sign({email: findUser?.email, name: findUser?.name}, secretKey);
+    let token = jwt.sign({_id: findUser?._id, email: findUser?.email, name: findUser?.name}, secretKey);
     console.log("JWT Token : ", token);
     
 
@@ -340,27 +345,6 @@ app.post("/auth/login", async (req, res) => {
     });
   }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
 
 
 
