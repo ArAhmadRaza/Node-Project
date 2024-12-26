@@ -9,9 +9,8 @@ const MONGO_URI = process.env.MONGO_URI;
 // Function to connect MongoDB with mongoose
 const connectMongoDB = async () => {
     try {
-        console.log("Mongo_URI",MONGO_URI);
       console.log("Connecting to MongoDB...");
-      await mongoose.connect(MONGO_URI || "mongodb://localhost:27017/todosDB"); // Removed deprecated options
+      await mongoose.connect(MONGO_URI); // Removed deprecated options
       console.log("MongoDB Connected");
       console.log(
         "----------------------- ----------__--___--____--___---____---____---___"

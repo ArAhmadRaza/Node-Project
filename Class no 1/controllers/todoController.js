@@ -50,14 +50,6 @@ const createTodo = async (req, res) => {
       id: req?.body?.id,
       createdAt: new Date(),
     });
-    // const validationError = newTodo.validateSync();
-    // if (validationError) {
-    //   return res.status(400).json({
-    //     data: null,
-    //     message: "Validation error",
-    //     error: validationError.message,
-    //   });
-    // }
     console.log("newTodo: ====---------------------->>>>> ", newTodo);
     // await mongoose.set("debug", true);
     // await connectMongoDB();
@@ -107,10 +99,10 @@ const deleteTodo = async (req, res) => {
   try {
     let id = req?.params?.id;
     let deleteTodo = await Todos.findOneAndDelete({ id: id });
-    console.log("deleteTodo: ", deleteTodo);
+    console.log("deleteTodo: ", deleteTodo); 
     res.json({
       data: deleteTodo,
-      message: "Success",
+      message: "Successfully deleted todo",
     });
   } catch (error) {
     res.status(501).json({

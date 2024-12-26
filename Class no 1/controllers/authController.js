@@ -5,7 +5,6 @@ dotenv.config();
 const secretKey = process.env.SECRET_KEY;
 
 const User = require("../models/userModel");
-console.log("secretKey: ", secretKey);
 
 const doLogin = async (req, res) => {
     try {
@@ -41,7 +40,6 @@ const doLogin = async (req, res) => {
         });
       }
       let token = jwt.sign({_id: findUser._id, email: findUser.email, name: findUser.name}, secretKey);
-      console.log("JWT Token : ", token);
       
   
       res.status(200).json({
@@ -65,7 +63,6 @@ const doLogin = async (req, res) => {
 
 const doSignup =  async (req, res) => {
     try {
-      console.log("req.body in signup: ", req.body);
       if(!req.body.password){
         res.status(501).json({
           data: [],
@@ -74,7 +71,6 @@ const doSignup =  async (req, res) => {
         });
       }
       let hashedPassword = await bcrypt.hashSync(req?.body?.password, 10);
-      console.log("hashedPassword: ", hashedPassword);
       let newUser = new User({
         name: req?.body?.name,
         email: req?.body?.email,
@@ -83,7 +79,6 @@ const doSignup =  async (req, res) => {
         createdAt: new Date()
       })
       let savedUser = await newUser.save();
-      console.log("savedUser: ", savedUser);
       res.status(200).json({
         data: savedUser,
         message: "Success",

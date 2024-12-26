@@ -91,12 +91,13 @@ const todoSchema = new mongoose.Schema({
   },
   id: {
     type: Number,
-    unique: true,
+    unique: false,
     required: true,
   },
   createdAt: {
     type: Date,
     default: Date.now,
+    required: false,
   },
 });
 
@@ -108,28 +109,28 @@ app.get("/", (req, res) => {
 });
 
 // Create a new todo
-app.post("/todos/create",authVerify, async (req, res) => {
+app.post("/todos/create", async (req, res) => {
   try {
     // Create a new Todo instance from the request body
     const newTodo = new Todo({
       title: req?.body?.title,
       // email: req?.body?.email,
       description: req?.body?.description,
-      completed: req?.body?.completed,
+      completed: req?.body?.completed, 
       id: req?.body?.id,
     });
-    console.log("newTodo: ", newTodo);
+    console.log("newTodo: -=== =================-=-=-=-=-=-=-= ", newTodo);
 
     // Save the Todo to the database
     const savedTodo = await newTodo.save();
-    console.log("savedTodo: ", savedTodo);
+    console.log("savedTodo: -====================-=-=-=-=-=-=-= ", savedTodo);
 
     // Respond with the saved Todo
     res.status(201).json({
       data: savedTodo,
       message: "Todo created successfully",
     });
-  } catch (error) {
+  } catch (error) { 
     console.error("Error creating todo:", error.message);
 
     // Respond with an error message
@@ -139,7 +140,7 @@ app.post("/todos/create",authVerify, async (req, res) => {
       error: error.message,
     });
   }
-});
+}); 
 
 //todos
 //get todos
