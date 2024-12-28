@@ -5,12 +5,19 @@ const getProducts = async (req, res) => {
   try {
     // const products = await Product.find({name:"Samsung S24 Ultra", price:{ $gt: 1000 }}.limit(5).sort({price:1}).select({name:1,price:1,description:1}));
 
-    let search = req.body.search
-    let searchQuery = new RegExp(search, "i")
-
-    const products = await Product.find({name:{$regex: searchQuery}});
-
-    // const products = await Product.find();
+    // let search = req.body.search
+    // let searchQuery = new RegExp(search, "i")
+    // const products = await Product.find({name:{$regex: searchQuery}});
+    const products = await Product.find();
+    
+    // for Paginate
+    /*
+    const options = {
+      page: req?.body?.page || 1,
+      limit: req?.body?.limit || 10,
+    };
+*/
+    // const products = Product.paginate({}, options)
 
     return res.status(200).json({
       products: products,
