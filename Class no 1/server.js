@@ -2,11 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const connectMongoDB = require("./config/db");
 const app = express();
 const port = 5000;
+const connectMongoDB = require("./config/db");
 const authRouter = require("./routes/authRoutes");
 const todoRouter = require("./routes/todoRoutes");
+const productRouter = require("./routes/productRoutes");
 
  
  
@@ -41,7 +42,7 @@ connectMongoDB();
 
 app.use("/auth", authRouter);
 app.use("/todos", todoRouter);
-
+app.use("/products", productRouter);
 
 
 
