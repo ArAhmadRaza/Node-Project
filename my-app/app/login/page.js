@@ -1,7 +1,8 @@
 "use client";
-import useState from "react";
+import {useState} from 'react';
 
-export function Login() {
+
+ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -19,8 +20,9 @@ export function Login() {
         requestOptions
       );
       console.log("Response ==>>", response);
-      const data = await response.json();
-      console.log("Data ==>>", data);
+      const result = await response.json();
+      console.log("Data ==>>", result);
+      localStorage.setItem("Token", result?.data?.token)
     } catch (e) {
       console.log("Error >><<", e);
     }
@@ -28,13 +30,13 @@ export function Login() {
 
   return (
     <div>
-      <form>
         <label>
           Email:
           <input
             type="email"
             onChange={(e) => setEmail(e.target.value)}
             name="email"
+            placeholder="Email"
           />
         </label>
         <label>
@@ -43,12 +45,15 @@ export function Login() {
             type="password"
             onChange={(e) => setPassword(e.target.value)}
             name="password"
+            placeholder="Password"
           />
         </label>
-        <button type="submit" onClick={doLogin}>
+        <button onClick={doLogin}>
           Login
         </button>
-      </form>
+ 
     </div>
   );
 }
+
+export default Login;
