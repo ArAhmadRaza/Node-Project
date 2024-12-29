@@ -1,12 +1,12 @@
 "use client";
 import {useState} from "react"
 //navigate to createTodo page
- const { useRouter } = appRouter()
+//  const { useRouter } = appRouter()
  // import "./style.css"
 import "../globals.css"
 // import Signout from "../components/signout";
 
-const router = useRouter()
+// const router = useRouter()
 
 export default function createTodo(){
     const [id , setID] = useState()

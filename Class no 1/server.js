@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const connectMongoDB = require("./config/db");
 const authRouter = require("./routes/authRoutes");
 const todoRouter = require("./routes/todoRoutes");
-const productRouter = require("./routes/productRoutes");
+const productRouter = require("./routes/productRoutes.js");
 const app = express();
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 
 
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  res.json("Server is running");
 });
 
 // Enable Mongoose debugging (optional)

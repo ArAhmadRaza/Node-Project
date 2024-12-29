@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 dotenv.config();
 const secretKey =  process.env.SECRET_KEY;
-
 const User = require("../models/userModel");
 
 const doLogin = async (req, res) => {
@@ -64,7 +63,7 @@ const doLogin = async (req, res) => {
 
 const doSignup =  async (req, res) => {
     try {
-      if(!req.body.password){
+      if(!req?.body?.password){
         res.status(501).json({
           data: [],
           message: "Error",
@@ -87,7 +86,7 @@ const doSignup =  async (req, res) => {
     } catch (error) {
       res.status(501).json({
         data: [],
-        message: "Error",
+        message: "Error in Signup",
         error: error.message,
       });
     }
