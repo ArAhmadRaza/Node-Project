@@ -7,10 +7,12 @@ const authRouter = require("./routes/authRoutes");
 const todoRouter = require("./routes/todoRoutes");
 const productRouter = require("./routes/productRoutes");
 const app = express();
-const port = process.env.PORT || 5000;
+const jwt = require('jsonwebtoken');
+const dotenv = require("dotenv");
 
- 
- 
+dotenv.config();
+const port =  5000 || process.env.PORT_URL;
+console.log("Port>>>>>>>>>>>",port);
 
 
 // Middlewares
