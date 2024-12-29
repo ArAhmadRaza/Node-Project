@@ -63,21 +63,21 @@ export default function Todos() {
 
     return (
         <div>
-        <h1>Todo List</h1>
-        <div className="todosContainer"> {/* Flex container for side-by-side layout */}
-          {todos.map(todo => (
-            <li key={todo._id} className="allTodos">
-              <h2>Title: {todo.title}</h2>
-              <p>Description: {todo.description}</p>
-              <p className={`status ${todo.completed ? 'completed' : 'pending'}`}>
-                Status: {todo.completed ? 'Completed' : 'Pending'}
-              </p>
-            </li>
-          ))}
+          <h1 className="todoHead">Todo List</h1>
+          <div className="todosContainer"> {/* Flex container for a responsive layout */}
+            {todos.map(todo => (
+              <li key={todo._id} className="allTodos">
+                <h2>{todo.title}</h2>
+                <p>{todo.description}</p>
+                <p className={`status ${todo.completed ? 'completed' : 'pending'}`}>
+                  Status: {todo.completed ? 'Completed' : 'Pending'}
+                </p>
+              </li>
+            ))}
+          </div>
         </div>
-      </div>
-    );
-}
+      );
+    }      
 
 
 

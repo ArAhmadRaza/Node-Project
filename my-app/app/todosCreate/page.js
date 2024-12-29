@@ -33,7 +33,6 @@ export default function createTodo(){
         const fetchApi = await fetch("http://localhost:8000/todos/create", requestOptions)
         const data = await fetchApi.json()
         console.log("data ================>>>>>>>>>>>>>",data)
-         
     }
 
     return(

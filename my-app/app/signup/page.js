@@ -2,36 +2,42 @@
 import { useState } from 'react';
 import "../globals.css"
 
+
 export default function Signup() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [address, setAddress] = useState("");
+    const [name, setName] = useState();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [address, setAddress] = useState();
 
 
     const doSignup = async (e) => {
         try {
-        
-            // console.log("User =================================", userData);
-            const raw = JSON.stringify({
-                name: "user",
-                email: email,
-                password: password,
-                address: address,
-            });
-            console.log("Raw =================================", raw);
+            let user = { name: name, email: email, password: password, address: address };
+
+            console.log("uediting", user);
+            const raw = JSON.stringify(user);
+
+
+
             const requestOptions = {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: raw,
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: raw,
+              redirect: "follow"
             };
-            const response = await fetch(
-                `http://localhost:8000/auth/signup`,
-                requestOptions
-            );
-            console.log("Response ==>>", response);
-            const result = await response.json();
-            console.log("Result    ?????? ==>>", result);
+
+            fetch("http://localhost:8000/auth/signup", requestOptions)
+              .then((response) => response.json())
+              .then((result) => console.log(result))
+              .catch((error) => console.error(error));
+
+              setName("");
+              setEmail("");
+              setPassword("");
+              setAddress("");
+
         } catch (error) {
             console.log("Error", error);
         }
@@ -44,9 +50,9 @@ export default function Signup() {
         <div class="fullbody">
             <h1 class="heading parent">Signup Page</h1>
             <div class="parent">
-            <div class="mt-4 w-4/12">
+                <div class="mt-4 w-4/12">
                     <label for="vi" class="text-gray-300 block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
-                    <input type="text" id="vi" onClick={(e)=>setName(e.target.value)} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Description" required />
+                    <input type="text" id="vi" onClick={(e) => setName(e.target.value)} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Description" required />
                 </div>
                 <div class="mb-6 w-4/12">
                     <label for="email " class="text-gray-300 block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>

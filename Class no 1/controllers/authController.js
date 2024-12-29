@@ -80,7 +80,7 @@ const doSignup =  async (req, res) => {
       })
       let savedUser = await newUser.save();
       res.json({
-        data: newUser,
+        data: savedUser,
         message: "Success",
       });
     } catch (error) {

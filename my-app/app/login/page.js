@@ -8,8 +8,6 @@ function Login() {
   const [error, setError] = useState(""); // For error messages
 
   const doLogin = async (e) => {
-    // Prevent default form submission
-    e.preventDefault();
 
     if (!email || !password) {
       setError("Please fill in both fields.");
@@ -18,6 +16,7 @@ function Login() {
 
     try {
       let user = { email: email, password: password };
+      console.log("Loged In User ====>>>>",user);
       const raw = JSON.stringify(user);
       const requestOptions = {
         method: "POST",
@@ -38,6 +37,7 @@ function Login() {
         const responseToken = localStorage.setItem("token", result?.data?.token);
         console.log("Token saved successfully.");
         console.log("User Loged in successfully")
+        console.log("Token ================",localStorage.getItem("token"))
        
       } else {
         console.log("Login failed. Please try again.");
