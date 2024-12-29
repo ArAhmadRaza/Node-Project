@@ -21,7 +21,7 @@ export default function createTodo(){
             description:description
         }
         const raw = JSON.stringify(newTodo);
-        const token = localStorage.getItem("token")
+        const token = localStorage.getItem('token')
         
       const requestOptions = {
         method: "POST",
@@ -41,11 +41,11 @@ export default function createTodo(){
     }
 
     return(
-        <div className="fullbody">
+        <div class="fullbody">
           {/* <button onClick={Signout}>Signout</button> */}
-            <h1 className="heading parent">Create Todo</h1>
-            <div className="container">
-              <div className="parent">
+            <h1 class="heading parent">Create Todo</h1>
+            <div class="container">
+              <div class="parent">
             <div class="mt-4 w-4/12">
             <label for="visitors" class="text-gray-300 block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter ID</label>
             <input type="number" id="visitors"  onClick={(e)=>setID(e.target.value)} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Enter id" required />

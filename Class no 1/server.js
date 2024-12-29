@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 
 dotenv.config();
-const port =  5000 || process.env.PORT_URL;
+const port =  5000
 console.log("Port>>>>>>>>>>>",port);
 
 

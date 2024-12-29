@@ -76,15 +76,15 @@ const doSignup =  async (req, res) => {
         email: req?.body?.email,
         password: hashedPassword,
         address: req?.body?.address,
-        createdAt: new Date()
+        createdAt: new Date(),
       })
       let savedUser = await newUser.save();
-      res.status(200).json({
-        data: savedUser,
+      res.json({
+        data: newUser,
         message: "Success",
       });
     } catch (error) {
-      res.status(501).json({
+      res.json({
         data: [],
         message: "Error in Signup",
         error: error.message,
