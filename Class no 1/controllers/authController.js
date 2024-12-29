@@ -40,6 +40,7 @@ const doLogin = async (req, res) => {
         });
       }
       let token = jwt.sign({_id: findUser._id, email: findUser.email, name: findUser.name}, secretKey);
+      console.log("Token: ", token);
       
   
       res.status(200).json({
