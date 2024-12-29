@@ -26,14 +26,12 @@ export default function Signup() {
                 body: raw,
             };
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/auth/signup`,
+                `http://localhost:8000/auth/signup`,
                 requestOptions
             );
             console.log("Response ==>>", response);
             const result = await response.json();
             console.log("Result    ?????? ==>>", result);
-            const mytoken = localStorage.setItem("Token", result?.data?.token)
-            console.log("Token is: =======>>>>>>>>>>>", mytoken);
         } catch (error) {
             console.log("Error", error);
         }
