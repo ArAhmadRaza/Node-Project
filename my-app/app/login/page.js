@@ -23,8 +23,8 @@ import {useState} from 'react';
       const result = await response.json();
       console.log("Data ==>>", result);
       localStorage.setItem("Token", result?.data?.token)
-    } catch (e) {
-      console.log("Error >><<", e);
+    } catch (error) {
+      console.log("Error", error);
     }
   };
 

@@ -1,6 +1,6 @@
 
 const fetchTodos = async () => {
-    const response = await fetch(`http://localhost:5000/todos`, {cache: "no-store"})
+    const response = await fetch(`${process.env.NODE_URL}`, {cache: "no-store"})
     const data = await response.json()
     return data
 
